@@ -1,0 +1,116 @@
+.weatherDisplay {
+
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    // Стиль для блока 1 день
+    .dailyWrapper {
+        width: 810px;
+        height: 480px;
+        border: 2px solid grey;
+        box-shadow: 10px 15px 20px -6px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        background-color: #756c6c4d;
+        padding: 20px;
+
+        .mainInfoDaily {
+            display: flex;
+            align-items: center;
+            text-align: center;
+
+            .temperature {
+                font-size: 25px;
+                padding-right: 20px;
+            }
+
+            .weatherIcon {
+                width: 70px;
+            }
+        }
+
+        .description {
+            font-size: 20px;
+            margin-top: -10px;
+        }
+
+        .description::first-letter {
+            text-transform: uppercase;
+        }
+
+        .items {
+            padding-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+
+            .item {
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #fff;
+                padding-bottom: 15px;
+            }
+        }
+    }
+
+    // Стиль для блока 5 дней
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .fiveDayWrapper {
+            display: flex;
+            gap: 30px;
+
+            .mainInfoFive {
+                width: 250px;
+                height: 450px;
+                border: 2px solid grey;
+                box-shadow: 10px 15px 20px -6px rgba(0, 0, 0, 0.3);
+                border-radius: 10px;
+                background-color: #756c6c4d;
+                padding: 20px;
+
+                .date {
+                    font-size: 18px;
+                }
+
+                .mainTitle {
+                    display: flex;
+
+                    .temperature {
+                        font-size: 25px;
+                        padding-right: 20px;
+                    }
+
+                    .weatherIcon {
+                        width: 80px;
+                    }
+                }
+
+                .description {
+                    font-size: 15px;
+                    margin-top: -10px;
+                }
+
+                .description::first-letter {
+                    text-transform: uppercase;
+                }
+
+                .items {
+                    padding-top: 20px;
+                    font-size: 15px;
+        
+                    .item {
+                        display: flex;
+                        justify-content: space-between;
+                        border-bottom: 1px solid #fff;
+                        padding-bottom: 15px;
+                    }
+                }
+            }
+        }
+    }
+}

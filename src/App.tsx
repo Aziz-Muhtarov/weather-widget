@@ -1,57 +1,33 @@
 import React, { useState } from 'react';
-import { SearchBar } from "./Components/Search/index";
-import { WeatherDisplay } from "./Components/Result/index";
-import { fetchCoordinates, fetchWeather } from "./Components/Api/index";
-import CurrentLocation from "./Components/CurrentLocation"; // Импортируем компонент для текущего местоположения
+import { WeatherDisplay } from "./Components/LogicComponents/Result/index";
+import { fetchCoordinates, fetchWeather, fetchFiveDayForecast, fetchCoordinatesFromCoords } from "./Components/LogicComponents/Api/index";
+import CurrentLocation from "./Components/LogicComponents/CurrentLocation/index";
+import ForecastToggle from './Components/LogicComponents/ForecastToggle/index';
+import Header from "./Components/Layout/Header/index";
+import s from "./index.module.scss";
 
 export const App: React.FC = () => {
-  const [weatherData, setWeatherData] = useState<{
-    city: string;
-    temperature: number;
-    description: string;
-    pressure: number;
-    lat: number;
-    lon: number;
-
-  } | null>(null);
+  const [forecastMode, setForecastMode] = useState<"daily" | "five-day">("daily");
+  const [city, setCity] = useState<string | null>(null);
+  const [dailyWeatherData, setDailyWeatherData] = useState<any>(null);
+  const [fiveDayWeatherData, setFiveDayWeatherData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<any>(null); // Используется для отображения данных
 
   // Функция обработки успешного получения местоположения
   const handleLocationSuccess = async (lat: number, lon: number) => {
-    // Получаем название города по координатам
     const location = await fetchCoordinatesFromCoords(lat, lon);
     if (location) {
-      const weather = await fetchWeather(lat, lon, location.name); // Используем название города для прогноза погоды
-      if (weather) {
-        setWeatherData({
-          city: location.name, // Устанавливаем название города
-          temperature: weather.temperature,
-          description: weather.description,
-          pressure: weather.pressure,
-          lat,
-          lon,
-        });
-      }
+      setCity(location);
+
+      const weather = await fetchWeather(lat, lon, location);
+      setDailyWeatherData(weather);
+
+      const forecast = await fetchFiveDayForecast(lat, lon);
+      setFiveDayWeatherData(forecast);
+
+      setWeatherData(forecastMode === "daily" ? weather : forecast);
     } else {
       alert("Не удалось определить местоположение.");
-    }
-  };
-
-  // Функция обработки ошибки получения местоположения
-  const handleLocationError = () => {
-    alert("Ошибка при получении местоположения.");
-  };
-
-  // Функция для получения города по координатам
-  const fetchCoordinatesFromCoords = async (lat: number, lon: number) => {
-    try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=0baa5368c1f880bf8c569f63e959ee91&units=metric&lang=ru`
-      );
-      const data = await response.json();
-      return data?.name; // Возвращаем название города
-    } catch (error) {
-      console.error("Ошибка при получении города:", error);
-      return null;
     }
   };
 
@@ -63,33 +39,37 @@ export const App: React.FC = () => {
       return;
     }
 
-    const weather = await fetchWeather(location.lat, location.lon, location.name);
-    if (weather) {
-      setWeatherData({
-        city: weather.city,
-        temperature: weather.temperature,
-        description: weather.description,
-        pressure: weather.pressure,
-        lat: location.lat,
-        lon: location.lon,
-      });
-    }
+    setCity(city);
+
+    const weather = await fetchWeather(location.lat, location.lon, city);
+    setDailyWeatherData(weather);
+
+    const forecast = await fetchFiveDayForecast(location.lat, location.lon);
+    setFiveDayWeatherData(forecast);
+
+    setWeatherData(forecastMode === "daily" ? weather : forecast);
+  };
+
+  // Функция переключения режима
+  const handleToggleMode = (mode: "daily" | "five-day") => {
+    setForecastMode(mode);
+
+    // Переключаем уже загруженные данные
+    setWeatherData(mode === "daily" ? dailyWeatherData : fiveDayWeatherData);
   };
 
   return (
-    <div className="app">
-      <h1>Прогноз погоды</h1>
+    <div className={s.app}>
+      <ForecastToggle mode={forecastMode} setMode={handleToggleMode} />
 
-      {/* Компонент для получения текущего местоположения */}
       <CurrentLocation
         onLocationSuccess={handleLocationSuccess}
-        onLocationError={handleLocationError}
+        onLocationError={() => alert("Ошибка при получении местоположения.")}
       />
 
-      {/* Поисковая строка доступна всегда */}
-      <SearchBar onSearch={handleSearch} />
+      <Header onSearch={handleSearch} />
 
-      {weatherData && <WeatherDisplay {...weatherData} />}
+      {weatherData && <WeatherDisplay city={city || ""} mode={forecastMode} weatherData={weatherData} />}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import s from './styles.module.scss'
 
 interface CurrentLocationProps {
   onLocationSuccess: (lat: number, lon: number) => void;
@@ -33,11 +34,11 @@ const CurrentLocation: React.FC<CurrentLocationProps> = ({
   };
 
   return (
-    <div>
-      <button onClick={getCurrentLocation} disabled={isLoading}>
+    <div className={s.buttonContainer}>
+      <button onClick={getCurrentLocation} disabled={isLoading} className={s.button}>
         {isLoading
           ? "Получение местоположения..."
-          : "Использовать текущее местоположение"}
+          : "Текущее местоположение"}
       </button>
     </div>
   );

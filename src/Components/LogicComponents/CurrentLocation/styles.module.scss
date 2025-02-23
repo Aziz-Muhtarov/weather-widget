@@ -1,0 +1,20 @@
+.buttonContainer {
+    position: absolute;
+    z-index: 999;
+    right: 10%;
+    top: 2%;
+
+    .button {
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.2); /* Прозрачная кнопка */
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        padding: 11px;
+        transition: background 0.3s ease;
+        &:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    }
+}

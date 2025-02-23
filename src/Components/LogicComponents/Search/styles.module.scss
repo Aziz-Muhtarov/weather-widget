@@ -1,0 +1,43 @@
+.searchWrapper {
+    position: relative;
+    width: fit-content;
+
+    .searchInput {
+        width: 450px;
+        height: 35px;
+        border-radius: 10px;
+        font-size: 15px;
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        color: white;
+        outline: none;
+        padding: 3px 20px;
+    
+        &:focus {
+            border: 2px solid white; /* Граница становится белой при фокусе */
+        }
+    
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.6); /* Полупрозрачный placeholder */
+        }
+    }
+    
+    .searchButton {
+        position: absolute;
+        right: 0%;
+        padding: 10px;
+        height: 100%;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.2); /* Прозрачная кнопка */
+        color: white;
+        border: none;
+        border-radius: 0 10px 10px 0;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    
+        &:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    }
+}
+
