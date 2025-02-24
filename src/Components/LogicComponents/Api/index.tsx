@@ -15,8 +15,23 @@ interface WeatherData {
   pressure: number;
   humidity: number;
   wind: number;
-  sunrise: number;
-  sunset: number;
+  sunrise: string;
+  sunset: string;
+}
+
+
+
+// Функция для форматирования даты из строки в dd-mm-yyyy
+const formatDateFromString = (dateString: string): string => {
+  // Преобразуем строку в объект Date
+  const date = new Date(dateString); // Конструктор Date автоматически парсит строку в формате "yyyy-mm-dd hh:mm:ss"
+
+  // Извлекаем день, месяц и год
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяц начинается с 0, поэтому добавляем 1
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`; // Форматируем как dd-mm-yyyy
 }
 
 // Функция для получения координат по названию города
@@ -66,7 +81,7 @@ export const fetchWeather = async (lat: number, lon: number, city: string): Prom
 
     return {
       city,
-      temperature: data.main.temp,
+      temperature: Math.round(data.main.temp),
       description: data.weather[0].description,
       icon: data.weather[0].icon,
       pressure: data.main.pressure,
@@ -88,9 +103,12 @@ export const fetchFiveDayForecast = async (lat: number, lon: number) => {
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=ru`
     );
     const data = await response.json();
+
+    console.log('5 Day Forecast Data:', data.list);
+    
     return data.list.map((item: any) => ({
-      date: item.dt_txt,
-      temperature: item.main.temp,
+      date: formatDateFromString(item.dt_txt), // Пытаюсь поменять формат даты
+      temperature: Math.round(item.main.temp),
       description: item.weather[0].description,
       icon: item.weather[0].icon,
       pressure: item.main.pressure,
