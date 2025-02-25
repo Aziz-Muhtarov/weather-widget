@@ -1,3 +1,7 @@
+import moment from 'moment'; // moment library for React
+import 'moment/min/moment-with-locales';
+
+moment.locale('ru');
 const API_KEY = "0baa5368c1f880bf8c569f63e959ee91";
 
 
@@ -23,16 +27,11 @@ interface WeatherData {
 
 // Функция для форматирования даты из строки в dd-mm-yyyy
 const formatDateFromString = (dateString: string): string => {
-  // Преобразуем строку в объект Date
-  const date = new Date(dateString); // Конструктор Date автоматически парсит строку в формате "yyyy-mm-dd hh:mm:ss"
-
-  // Извлекаем день, месяц и год
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяц начинается с 0, поэтому добавляем 1
-  const year = date.getFullYear();
-
-  return `${day}-${month}-${year}`; // Форматируем как dd-mm-yyyy
-}
+  console.log("Дата до форматирования:", dateString); // Проверяем входные данные
+  const formattedDate = moment(dateString, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY');
+  console.log("Дата после форматирования:", formattedDate); // Проверяем результат
+  return formattedDate;
+};
 
 // Функция для получения координат по названию города
 export const fetchCoordinates = async (city: string): Promise<GeoLocation | null> => {
@@ -106,7 +105,9 @@ export const fetchFiveDayForecast = async (lat: number, lon: number) => {
 
     console.log('5 Day Forecast Data:', data.list);
     
-    return data.list.map((item: any) => ({
+    const dailyForecast = data.list.filter((item: any) => item.dt_txt.includes("12:00:00"));
+
+    return dailyForecast.map((item: any) => ({
       date: formatDateFromString(item.dt_txt), // Пытаюсь поменять формат даты
       temperature: Math.round(item.main.temp),
       description: item.weather[0].description,
@@ -114,8 +115,8 @@ export const fetchFiveDayForecast = async (lat: number, lon: number) => {
       pressure: item.main.pressure,
       humidity: item.main.humidity,
       wind: item.wind.speed,
-      sunrise: item.sys.sunrise,
-      sunset: item.sys.sunset,
+      sunrise: item.sys?.sunrise || "",
+      sunset: item.sys?.sunset || "",
     }));
   } catch (error) {
     console.error("Ошибка загрузки прогноза на 5 дней:", error);
