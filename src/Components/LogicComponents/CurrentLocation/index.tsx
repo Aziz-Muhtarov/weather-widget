@@ -33,6 +33,8 @@ const CurrentLocation: React.FC<CurrentLocationProps> = ({
     }
   };
 
+  
+
   return (
     <div className={s.buttonContainer}>
       <button onClick={getCurrentLocation} disabled={isLoading} className={s.button}>

@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import s from "./styles.module.scss";
 
 interface DailyWeather {
@@ -18,6 +19,10 @@ interface WeatherDisplayProps {
   mode: "daily" | "five-day";
   weatherData: DailyWeather | DailyWeather[];
 }
+
+const formatDateFromString = (timestamp: number): string => {
+  return moment.unix(timestamp).format('DD-MM-YYYY');
+};
 
 // Функция для преобразования времени
 const formatTime = (timestamp: number) => {
@@ -80,10 +85,12 @@ export const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
           <div className={s.fiveDayWrapper}>
             {dailyFilteredData.length > 0 ? (
               dailyFilteredData.map((day, index) => {
-                console.log("Day data:", day); // Добавьте это для отладки
+                // console.log("Day data:", day);
                 return (
                   <div key={index} className={s.mainInfoFive}>
-                    <h3 className={s.date}>{day.date.split(" ")[0]}</h3>
+                    <h3 className={s.date}>
+                      {formatDateFromString(moment(day.date, "YYYY-MM-DD HH:mm:ss").unix())}
+                    </h3>
                     <div className={s.mainTitle}>
                       <p className={s.temperature}>{day.temperature}°C</p>
                       <img

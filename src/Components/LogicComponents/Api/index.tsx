@@ -25,13 +25,10 @@ interface WeatherData {
 
 
 
-// Функция для форматирования даты из строки в dd-mm-yyyy
-const formatDateFromString = (dateString: string): string => {
-  console.log("Дата до форматирования:", dateString); // Проверяем входные данные
-  const formattedDate = moment(dateString, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY');
-  console.log("Дата после форматирования:", formattedDate); // Проверяем результат
-  return formattedDate;
-};
+// // Функция для форматирования даты из строки в dd-mm-yyyy
+// const formatDateFromString = (timestamp: number): string => {
+//   return moment.unix(timestamp).format('DD-MM-YYYY');
+// };
 
 // Функция для получения координат по названию города
 export const fetchCoordinates = async (city: string): Promise<GeoLocation | null> => {
@@ -105,10 +102,10 @@ export const fetchFiveDayForecast = async (lat: number, lon: number) => {
 
     console.log('5 Day Forecast Data:', data.list);
     
-    const dailyForecast = data.list.filter((item: any) => item.dt_txt.includes("12:00:00"));
+    // const dailyForecast = data.list.filter((item: any) => item.dt_txt.includes("12:00:00"));
 
-    return dailyForecast.map((item: any) => ({
-      date: formatDateFromString(item.dt_txt), // Пытаюсь поменять формат даты
+    return data.list.map((item: any) => ({
+      date: item.dt_txt,
       temperature: Math.round(item.main.temp),
       description: item.weather[0].description,
       icon: item.weather[0].icon,

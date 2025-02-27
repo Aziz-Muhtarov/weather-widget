@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { WeatherDisplay } from "./Components/LogicComponents/Result/index";
 import { fetchCoordinates, fetchWeather, fetchFiveDayForecast, fetchCoordinatesFromCoords } from "./Components/LogicComponents/Api/index";
-import CurrentLocation from "./Components/LogicComponents/CurrentLocation/index";
 import ForecastToggle from './Components/LogicComponents/ForecastToggle/index';
 import Header from "./Components/Layout/Header/index";
 import s from "./index.module.scss";
@@ -11,7 +10,7 @@ export const App: React.FC = () => {
   const [city, setCity] = useState<string | null>(null);
   const [dailyWeatherData, setDailyWeatherData] = useState<any>(null);
   const [fiveDayWeatherData, setFiveDayWeatherData] = useState<any>(null);
-  const [weatherData, setWeatherData] = useState<any>(null); // Используется для отображения данных
+  const [weatherData, setWeatherData] = useState<any>(null); 
 
   // Функция обработки успешного получения местоположения
   const handleLocationSuccess = async (lat: number, lon: number) => {
@@ -61,14 +60,11 @@ export const App: React.FC = () => {
   return (
     <div className={s.app}>
       <ForecastToggle mode={forecastMode} setMode={handleToggleMode} />
-
-      <CurrentLocation
-        onLocationSuccess={handleLocationSuccess}
-        onLocationError={() => alert("Ошибка при получении местоположения.")}
+      <Header 
+      onSearch={handleSearch} 
+      onLocationSuccess={handleLocationSuccess} 
+      onLocationError={() => alert("Ошибка при получении местоположения.")} 
       />
-
-      <Header onSearch={handleSearch} />
-
       {weatherData && <WeatherDisplay city={city || ""} mode={forecastMode} weatherData={weatherData} />}
     </div>
   );
