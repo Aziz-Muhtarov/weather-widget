@@ -99,10 +99,7 @@ export const fetchFiveDayForecast = async (lat: number, lon: number) => {
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=ru`
     );
     const data = await response.json();
-
-    console.log('5 Day Forecast Data:', data.list);
     
-    // const dailyForecast = data.list.filter((item: any) => item.dt_txt.includes("12:00:00"));
 
     return data.list.map((item: any) => ({
       date: item.dt_txt,
